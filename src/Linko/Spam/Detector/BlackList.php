@@ -13,6 +13,10 @@ class BlackList implements SpamDetectorInterface
         }
     }
 
+    /**
+     * @param $vars
+     * @param bool $regex
+     */
     public function add($vars, $regex = false)
     {
         if (!is_array($vars)) {
