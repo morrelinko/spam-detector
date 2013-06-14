@@ -3,6 +3,8 @@
 class SpamFilter
 {
     /**
+     * Holds registed spam detectors
+     *
      * @var SpamDetectorInterface[]
      */
     private $_spamDetectors = array();
@@ -28,6 +30,8 @@ class SpamFilter
     }
 
     /**
+     * Registers a Spam Detector
+     *
      * @param SpamDetectorInterface $spamDetector
      *
      * @return SpamFilter
@@ -41,6 +45,8 @@ class SpamFilter
     }
 
     /**
+     * Gets a list of all spam detectors
+     *
      * @return SpamDetectorInterface[]
      */
     public function getDetectors()
