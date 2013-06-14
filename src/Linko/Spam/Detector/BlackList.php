@@ -4,8 +4,18 @@ use Linko\Spam\SpamDetectorInterface;
 
 class BlackList implements SpamDetectorInterface
 {
+    /**
+     * Holds blacklisted words
+     *
+     * @var array
+     */
     private $_blackLists = array();
 
+    /**
+     * Constructor
+     *
+     * @param array $options
+     */
     public function __construct(array $options = array())
     {
         if (isset($options['blackLists'])) {
@@ -14,8 +24,15 @@ class BlackList implements SpamDetectorInterface
     }
 
     /**
-     * @param $vars
-     * @param bool $regex
+     * Adds a word/pattern to the black list.
+     * Set the second argument to true to treat
+     * the added word as a regular expression.
+     *
+     *
+     * @param string $vars List of blacklisted words
+     * @param bool $regex Flags word as regex pattern
+     *
+     * @return BlackList
      */
     public function add($vars, $regex = false)
     {
@@ -26,8 +43,18 @@ class BlackList implements SpamDetectorInterface
         foreach ($vars as $var) {
             $this->_blackLists[] = $regex ? '[' . $var . ']' : $var;
         }
+
+        return $this;
     }
 
+    /**
+     * Defined in SpamDetectorInterface
+     * Checks a string if it contains any word that is blacklisted.
+     *
+     * @param string $string
+     *
+     * @return bool
+     */
     public function detect($string)
     {
         $blackListRegex = sprintf('~%s~', implode('|', array_map(function ($value) {
@@ -41,6 +68,6 @@ class BlackList implements SpamDetectorInterface
             return $value;
         }, $this->_blackLists)));
 
-        return preg_match($blackListRegex, $string);
+        return (bool)preg_match($blackListRegex, $string);
     }
 }
