@@ -2,8 +2,14 @@
 
 class SpamResult
 {
+    /**
+     * @var bool
+     */
     private $_isSpam = false;
 
+    /**
+     * @var array
+     */
     private $_messages = array();
 
     /**

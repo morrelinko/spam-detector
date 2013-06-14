@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         colors="false"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         surpressExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         syntaxCheck="false"
+         bootstrap="./test/bootstrap.php">
+
+    <testsuites>
+        <testsuite name="Spam Detector Test Suit">
+            <directory phpVersion="5.3.0">./test/Linko/Spam</directory>
+        </testsuite>
+    </testsuites>
+
+</phpunit>
