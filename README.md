@@ -1,6 +1,8 @@
 Spam Detector
 ---------------------
 
+[UNDER DEVELOPMENT]: Not ready for production usage
+
 ## Usage
 
 	// Create a black list spam detector
