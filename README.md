@@ -15,7 +15,7 @@ You can define the spam filter as a dependency in your project. Below is a minim
 
 	{
 		"require" : {
-			"linko/spam" : "dev-master"
+			"linko/spamfilter" : "dev-master"
 		}
 	}
 
