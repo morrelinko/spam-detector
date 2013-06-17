@@ -62,4 +62,10 @@ this library which you can just 'include()' into your project files
 Each time you call the ``check()`` method on a string, it returns a ``SpamResult``
 Object which holds the ... hmm ... spam check result.
 
-## Spam
+## Currently Supported Spam Detector
+
+###### 1. BlackList Detector:
+
+The black list detector is a spam detector that flags a string as a spam  if it contains
+any of one or more words that has been added to the black list.
+Strings could be a regular expression or a character sequence.
