@@ -62,7 +62,7 @@ this library which you can just 'include()' into your project files
 Each time you call the ``check()`` method on a string, it returns a ``SpamResult``
 Object which holds the ... hmm ... spam check result.
 
-## Currently Supported Spam Detector
+## Currently Supported Spam Detectors
 
 ###### 1. BlackList Detector:
 
