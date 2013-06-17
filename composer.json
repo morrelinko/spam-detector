@@ -1,0 +1,13 @@
+{
+    "name": "linko/spam",
+    "description": "A simple spam detector class",
+    "authors": [
+        {
+            "name": "Morrison Laju",
+            "email": "morrelinko@gmail.com"
+        }
+    ],
+    "require": {
+        
+    }
+}
