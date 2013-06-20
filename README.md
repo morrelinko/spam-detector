@@ -15,7 +15,7 @@ You can define the spam filter as a dependency in your project. Below is a minim
 
 	{
 		"require" : {
-			"linko/spamfilter" : "dev-master"
+			"linko/spamfilter": "1.1.0"
 		}
 	}
 
@@ -69,3 +69,13 @@ Object which holds the ... hmm ... spam check result.
 The black list detector is a spam detector that flags a string as a spam  if it contains
 any of one or more words that has been added to the black list.
 Strings could be a regular expression or a character sequence.
+
+###### 1. LinkRife Detector:
+
+The link rifle detector checks if a text contains too many links based on the max links allowed
+and the percentage ratio of links to words.. You can also modify these value to your taste.
+
+@TODO
+============
+
+* Create a service for laravel
