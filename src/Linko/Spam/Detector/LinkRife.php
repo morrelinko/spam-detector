@@ -25,7 +25,7 @@ class LinkRife implements SpamDetectorInterface
      * percentage ratio is greater than the specified
      * ratio, it is considered a "Link Overflow"
      *
-     * @var float
+     * @var int
      *   Default 40%
      */
     private $_maxRatio = 40;
@@ -50,7 +50,7 @@ class LinkRife implements SpamDetectorInterface
     }
 
     /**
-     * @param float $ratio
+     * @param int $ratio
      */
     public function setMaxRatio($ratio)
     {
@@ -58,7 +58,7 @@ class LinkRife implements SpamDetectorInterface
     }
 
     /**
-     * @return float|int
+     * @return int
      */
     public function getMaxRatio()
     {
@@ -77,7 +77,7 @@ class LinkRife implements SpamDetectorInterface
         if($linkCount >= $this->getMaxLinkAllowed()) {
             // If the link count is more than the maximum allowed
             // the string is automatically considered spam..
-            return false;
+            return true;
         }
 
         // Get the ratio of words to link

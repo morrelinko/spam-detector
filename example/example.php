@@ -14,6 +14,7 @@ $blackListDetector->add('\d{3}\.\d{3}\.\d{3}\.\d{3}', true); // regex
 
 // setup link rife detector
 $linkRife = new LinkRife();
+$linkRife->setMaxLinkAllowed(2);
 
 // setup spam filter father
 $spamFilter = new Linko\Spam\SpamFilter();
@@ -22,7 +23,7 @@ $spamFilter = new Linko\Spam\SpamFilter();
 $spamFilter->registerDetector($blackListDetector);
 $spamFilter->registerDetector($linkRife);
 
-$comment = "Hey dude, your face is. ";
+$comment = "Hey dude, your face is. example.com and example3.com ";
 
 if($spamFilter->check($comment)->passed()) {
     echo '<h4>Passed</h4>';
