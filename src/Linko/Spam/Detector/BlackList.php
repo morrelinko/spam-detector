@@ -2,6 +2,11 @@
 
 use Linko\Spam\SpamDetectorInterface;
 
+/**
+ * Spam BlackLists Detector
+ *
+ * @author Morrison Laju <morrelinko@gmail.com>
+ */
 class BlackList implements SpamDetectorInterface
 {
     /**
@@ -57,7 +62,7 @@ class BlackList implements SpamDetectorInterface
      */
     public function detect($string)
     {
-        $blackListRegex = sprintf('~%s~', implode('|', array_map(function ($value) {
+        $blackListRegex = sprintf('!%s!', implode('|', array_map(function ($value) {
             if (isset($value[0]) && $value[0] == '[') {
                 $value = substr($value, 1, -1);
             }
@@ -65,7 +70,7 @@ class BlackList implements SpamDetectorInterface
                 $value = preg_quote($value);
             }
 
-            return $value;
+            return '(?:'.$value.')';
         }, $this->_blackLists)));
 
         return (bool)preg_match($blackListRegex, $string);

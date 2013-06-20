@@ -19,6 +19,7 @@ class SpamFilter
     public function check($string)
     {
         $failure = 0;
+        $string = $this->_normalizeString($string);
 
         foreach ($this->getDetectors() as $spamDetector) {
             if($spamDetector->detect($string)) {
@@ -52,5 +53,18 @@ class SpamFilter
     public function getDetectors()
     {
         return $this->_spamDetectors;
+    }
+
+    /**
+     * Used to normalize string before passing
+     * it to detectors
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    private function _normalizeString($string)
+    {
+        return trim(strtolower($string));
     }
 }
