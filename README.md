@@ -75,7 +75,33 @@ Strings could be a regular expression or a character sequence.
 The link rifle detector checks if a text contains too many links based on the max links allowed
 and the percentage ratio of links to words.. You can also modify these value to your taste.
 
-@TODO
-============
+## Creating your own Detector
 
-* Create a service for laravel
+You create a detector simply by creating a class that implements the ``SpamDetectorInterface``
+with a ``detect()`` method that you must implement ... The string is passed as the argument.
+If your detector returns ``true`` then the text is flagged as spam otherwise not spam if false is returned.
+
+Below is a fantastic spam detector that checks if a text is above 200 words and flags it as spam.
+
+	<?php
+
+	class LengthTooLong implements SpamDetectorInterface
+	{
+		public function detect($string)
+		{
+			if (str_word_count($string) > 200) {
+				return true;
+			}
+
+			return false;
+		}
+	}
+
+After creating your spam detector, you add it using the ``registerDetector()`` method in the SpamFilter
+
+	...
+
+	$lengthTooLong = new LengthTooLong();
+
+	$spamFilter->registerDetector($lengthTooLong);
+
