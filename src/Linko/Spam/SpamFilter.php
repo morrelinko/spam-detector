@@ -3,11 +3,11 @@
 class SpamFilter
 {
     /**
-     * Holds registed spam detectors
+     * Holds registered spam detectors
      *
      * @var SpamDetectorInterface[]
      */
-    private $_spamDetectors = array();
+    protected $_spamDetectors = array();
 
     /**
      * Checks if a string is spam or not
@@ -21,13 +21,13 @@ class SpamFilter
         $failure = 0;
         $string = $this->_normalizeString($string);
 
-        foreach ($this->getDetectors() as $spamDetector) {
+        foreach ($this->_spamDetectors as $spamDetector) {
             if($spamDetector->detect($string)) {
                 $failure++;
             }
         }
 
-        return new SpamResult($failure > 0 ? true : false);
+        return new SpamResult($failure > 0);
     }
 
     /**
