@@ -75,7 +75,7 @@ Strings could be a regular expression or a character sequence.
 The link rifle detector checks if a text contains too many links based on the max links allowed
 and the percentage ratio of links to words.. You can also modify these value to your taste.
 
-## Creating your own Detector
+## Creating your own custom Detector
 
 You create a detector simply by creating a class that implements the ``SpamDetectorInterface``
 with a ``detect()`` method that you must implement ... The string is passed as the argument.

@@ -1,6 +1,6 @@
 {
     "name": "linko/spamfilter",
-    "description": "A simple spam detector class",
+    "description": "An extensible simple spam detector class",
     "authors": [
         {
             "name": "Morrison Laju",
