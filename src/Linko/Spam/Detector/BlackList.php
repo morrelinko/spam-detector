@@ -35,7 +35,7 @@ class BlackList implements SpamDetectorInterface
         }
 
         if(isset($options['listFile'])) {
-            $this->setFile($options['listFile']);
+            $this->setListFile($options['listFile']);
         }
     }
 
@@ -70,7 +70,7 @@ class BlackList implements SpamDetectorInterface
      *
      * @throws \RuntimeException
      */
-    public function setFile($file)
+    public function setListFile($file)
     {
         if(!file_exists($file)) {
             throw new \RuntimeException(sprintf(
@@ -92,6 +92,16 @@ class BlackList implements SpamDetectorInterface
      */
     public function detect($string)
     {
+        $fileList = array();
+
+        if($this->_listFile) {
+            $fileList = array_map('trim',
+                explode("\n", file_get_contents($this->_listFile))
+            );
+        }
+
+        $blackLists = array_merge($this->_blackLists, $fileList);
+
         $blackListRegex = sprintf('!%s!', implode('|', array_map(function ($value) {
             if (isset($value[0]) && $value[0] == '[') {
                 $value = substr($value, 1, -1);
@@ -101,7 +111,7 @@ class BlackList implements SpamDetectorInterface
             }
 
             return '(?:'.$value.')';
-        }, $this->_blackLists)));
+        }, $blackLists)));
 
         return (bool)preg_match($blackListRegex, $string);
     }
