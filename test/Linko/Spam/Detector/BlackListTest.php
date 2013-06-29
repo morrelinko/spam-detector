@@ -9,15 +9,30 @@ class BlackListTest extends \PHPUnit_Framework_TestCase
      */
     protected $spam;
 
+    /**
+     * @var BlackList
+     */
+    protected $blackList;
+
     public function setUp()
     {
-        $blackList = new BlackList();
-        $blackList->add("example.com");
-        $blackList->add("127.0.0.1");
-        $blackList->add("[site|some]dump(.*)?\.[com|org|net|info]", true);
+        $this->blackList = new BlackList();
+
+        // Adding black lists manually
+        $this->blackList->add("example.com");
+        $this->blackList->add("127.0.0.1");
+        $this->blackList->add("[site|some]dump(.*)?\.[com|org|net|info]", true);
 
         $this->spam = new SpamFilter();
-        $this->spam->registerDetector($blackList);
+        $this->spam->registerDetector($this->blackList);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testSetListFileException()
+    {
+        $this->blackList->setListFile('some-wrong-list-file.txt');
     }
 
     public function testSpamFreeString()
@@ -44,6 +59,15 @@ class BlackListTest extends \PHPUnit_Framework_TestCase
 
         $string = "this is a string with sitedump.net should fail spam check";
         $this->assertTrue($this->spam->check($string)->isSpam());
+    }
+
+    public function testBannedWordsFromListFile()
+    {
+        // Setting a file to load black lists from
+        $this->blackList->setListFile(__DIR__.'/Resource/banned.txt');
+
+        $string = "this is a string with banned words loaded from the lis file. [localhost]";
+        $this->assertTrue($this->spam->check($string)->failed());
     }
 
     public function tearDown()
