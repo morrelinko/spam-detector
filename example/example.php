@@ -8,7 +8,7 @@ use Linko\Spam\Detector\LinkRife;
 
 // setup black list detector
 $blackListDetector = new BlackList();
-$blackListDetector->setFile(__DIR__.'/banned.txt');
+$blackListDetector->setListFile(__DIR__.'/banned.txt');
 $blackListDetector->add('some-manual-site.com');
 
 // setup link rife detector
@@ -22,7 +22,8 @@ $spamFilter = new Linko\Spam\SpamFilter();
 $spamFilter->registerDetector($blackListDetector);
 $spamFilter->registerDetector($linkRife);
 
-$comment = "Hey dude, your face is. example.com and example3.com ";
+$comment = "Hey dude, your face is. www.example.com ";
+// $comment .= "some-manual-site.com is added at some point";
 
 if($spamFilter->check($comment)->passed()) {
     echo '<h4>Passed</h4>';
