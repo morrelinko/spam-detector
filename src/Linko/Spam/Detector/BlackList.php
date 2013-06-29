@@ -17,6 +17,13 @@ class BlackList implements SpamDetectorInterface
     private $_blackLists = array();
 
     /**
+     * Holds the file that stores blacklisted words
+     *
+     * @var null
+     */
+    private $_listFile = null;
+
+    /**
      * Constructor
      *
      * @param array $options
@@ -25,6 +32,10 @@ class BlackList implements SpamDetectorInterface
     {
         if (isset($options['blackLists'])) {
             $this->_blackLists = $options['blackLists'];
+        }
+
+        if(isset($options['listFile'])) {
+            $this->setFile($options['listFile']);
         }
     }
 
@@ -50,6 +61,25 @@ class BlackList implements SpamDetectorInterface
         }
 
         return $this;
+    }
+
+    /**
+     * Sets black list file
+     *
+     * @param string $file
+     *
+     * @throws \RuntimeException
+     */
+    public function setFile($file)
+    {
+        if(!file_exists($file)) {
+            throw new \RuntimeException(sprintf(
+                "Could not find black list file [%s]",
+                $file
+            ));
+        }
+
+        $this->_listFile = $file;
     }
 
     /**

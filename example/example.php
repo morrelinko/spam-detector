@@ -8,9 +8,8 @@ use Linko\Spam\Detector\LinkRife;
 
 // setup black list detector
 $blackListDetector = new BlackList();
-$blackListDetector->add('superSpammingWebsite.com');
-$blackListDetector->add('kill|suck', true); // regex
-$blackListDetector->add('\d{3}\.\d{3}\.\d{3}\.\d{3}', true); // regex
+$blackListDetector->setFile(__DIR__.'/banned.txt');
+$blackListDetector->add('some-manual-site.com');
 
 // setup link rife detector
 $linkRife = new LinkRife();
