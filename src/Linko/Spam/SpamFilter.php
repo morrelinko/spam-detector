@@ -12,17 +12,21 @@ class SpamFilter
     /**
      * Checks if a string is spam or not
      *
-     * @param $string
+     * @param string|array $data
      *
      * @return SpamResult
      */
-    public function check($string)
+    public function check($data)
     {
         $failure = 0;
-        $string = $this->_normalizeString($string);
+        if (is_string($data)) {
+            $data = array('text' => $data);
+        }
+
+        $data = $this->prepare($data);
 
         foreach ($this->_spamDetectors as $spamDetector) {
-            if($spamDetector->detect($string)) {
+            if ($spamDetector->detect($data)) {
                 $failure++;
             }
         }
@@ -39,8 +43,8 @@ class SpamFilter
      */
     public function registerDetector(SpamDetectorInterface $spamDetector)
     {
-        $detectorClass = get_class($spamDetector);
-        $this->_spamDetectors[$detectorClass] = $spamDetector;
+        $hash = spl_object_hash($spamDetector);
+        $this->_spamDetectors[$hash] = $spamDetector;
 
         return $this;
     }
@@ -59,12 +63,31 @@ class SpamFilter
      * Used to normalize string before passing
      * it to detectors
      *
-     * @param string $string
+     * @param array $data
      *
      * @return string
      */
-    private function _normalizeString($string)
+    protected function prepare(array $data)
     {
-        return trim(strtolower($string));
+        $data = array_merge(array(
+            'name'      => null,
+            'ip'        => $this->getIp(),
+            'userAgent' => $this->getUserAgent(),
+            'text'      => null
+        ), $data);
+
+        $data['text'] = trim(strtolower($data['text']));
+
+        return $data;
+    }
+
+    protected function getUserAgent()
+    {
+        return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
+    }
+
+    protected static function getIp()
+    {
+        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
     }
 }
