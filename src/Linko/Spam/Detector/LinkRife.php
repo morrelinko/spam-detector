@@ -68,10 +68,13 @@ class LinkRife implements SpamDetectorInterface
     /**
      * {@inheritDocs}
      */
-    public function detect($string)
+    public function detect($data)
     {
-        $wordCount = str_word_count($string);
-        preg_match_all(self::URL_REGEX, $string, $matches);
+        // We only need the text
+        $text = $data['text'];
+
+        $wordCount = str_word_count($text);
+        preg_match_all(self::URL_REGEX, $text, $matches);
         $linkCount = count($matches[0]);
 
         if($linkCount >= $this->getMaxLinkAllowed()) {
