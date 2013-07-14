@@ -39,14 +39,37 @@ class SpamFilter
      *
      * @param SpamDetectorInterface $spamDetector
      *
+     * @throws \RuntimeException
      * @return SpamFilter
      */
     public function registerDetector(SpamDetectorInterface $spamDetector)
     {
-        $hash = spl_object_hash($spamDetector);
-        $this->_spamDetectors[$hash] = $spamDetector;
+        $detectorId = $this->_classSimpleName($spamDetector);
+
+        if (isset($this->_spamDetectors[$detectorId])) {
+            throw new \RuntimeException(
+                "Spam Detector [%s] already exists", $detectorId);
+        }
+
+        $this->_spamDetectors[$detectorId] = $spamDetector;
 
         return $this;
+    }
+
+    /**
+     * Gets a detector using its detector ID (Class Simple Name)
+     *
+     * @param string $detectorId
+     *
+     * @return bool|\Linko\Spam\SpamDetectorInterface
+     */
+    public function getDetector($detectorId)
+    {
+        if (!isset($this->_spamDetectors[$detectorId])) {
+            return false;
+        }
+
+        return $this->_spamDetectors[$detectorId];
     }
 
     /**
@@ -86,8 +109,24 @@ class SpamFilter
         return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
     }
 
-    protected static function getIp()
+    protected function getIp()
     {
         return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+    }
+
+    /**
+     * Gets the name of a class (w. Namespaces removed)
+     *
+     * @param $class
+     *
+     * @return string
+     */
+    private function _classSimpleName($class)
+    {
+        if (is_object($class)) {
+            $class = get_class($class);
+        }
+
+        return substr($class, strrpos($class, '\\') + 1);
     }
 }
