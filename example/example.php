@@ -31,3 +31,13 @@ if($spamFilter->check($comment)->passed()) {
 else {
     echo '<h4>The system has rejected your comment</h4>';
 }
+
+// You could also add more information
+$dataToCheck = array(
+    'name' => 'SomeSpamUsername',
+    'text' => $comment
+);
+
+if ($spamFilter->check($comment)->passed()) {
+    // do something
+}
