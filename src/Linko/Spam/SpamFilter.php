@@ -44,7 +44,7 @@ class SpamFilter
      */
     public function registerDetector(SpamDetectorInterface $spamDetector)
     {
-        $detectorId = $this->_classSimpleName($spamDetector);
+        $detectorId = $this->classSimpleName($spamDetector);
 
         if (isset($this->_spamDetectors[$detectorId])) {
             throw new \RuntimeException(
@@ -95,6 +95,7 @@ class SpamFilter
         $data = array_merge(array(
             'name'      => null,
             'ip'        => $this->getIp(),
+            'email'     => null,
             'userAgent' => $this->getUserAgent(),
             'text'      => null
         ), $data);
@@ -121,7 +122,7 @@ class SpamFilter
      *
      * @return string
      */
-    private function _classSimpleName($class)
+    protected function classSimpleName($class)
     {
         if (is_object($class)) {
             $class = get_class($class);
