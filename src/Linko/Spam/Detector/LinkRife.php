@@ -31,6 +31,22 @@ class LinkRife implements SpamDetectorInterface
     private $_maxRatio = 40;
 
     /**
+     * Constructor
+     *
+     * @param array $options
+     */
+    public function __construct(array $options = array())
+    {
+        if (isset($options['maxLinkAllowed'])) {
+            $this->setMaxLinkAllowed($options['maxLinkAllowed']);
+        }
+
+        if(isset($options['maxRatio'])) {
+            $this->setMaxRatio($options['maxRatio']);
+        }
+    }
+
+    /**
      * Sets the maximum number of links allowed in a text
      * before it is considered spam.
      *
@@ -73,9 +89,10 @@ class LinkRife implements SpamDetectorInterface
         // We only need the text
         $text = $data['text'];
 
-        $wordCount = str_word_count($text);
         preg_match_all(self::URL_REGEX, $text, $matches);
         $linkCount = count($matches[0]);
+
+        $wordCount = str_word_count($text, null, 'http: //');
 
         if($linkCount >= $this->getMaxLinkAllowed()) {
             // If the link count is more than the maximum allowed
