@@ -21,7 +21,9 @@ class SpamFilterTest extends \PHPUnit_Framework_TestCase
     {
         $detectors = $this->spam->getDetectors();
         $this->assertContainsOnlyInstancesOf('Linko\Spam\SpamDetectorInterface', $detectors);
-        $this->assertArrayHasKey("Linko\\Spam\\Detector\\BlackList", $detectors);
+        $this->assertArrayHasKey("BlackList", $detectors);
+        $this->assertFalse($this->spam->getDetector('Dummy'));
+        $this->assertInstanceOf('Linko\Spam\SpamDetectorInterface', $this->spam->getDetector('BlackList'));
     }
 
     public function tearDown()

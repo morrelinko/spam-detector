@@ -3,9 +3,9 @@
 interface SpamDetectorInterface
 {
     /**
-     * @param string $string
+     * @param array $data
      *
      * @return mixed
      */
-    public function detect($string);
+    public function detect($data);
 }

@@ -12,17 +12,21 @@ class SpamFilter
     /**
      * Checks if a string is spam or not
      *
-     * @param $string
+     * @param string|array $data
      *
      * @return SpamResult
      */
-    public function check($string)
+    public function check($data)
     {
         $failure = 0;
-        $string = $this->_normalizeString($string);
+        if (is_string($data)) {
+            $data = array('text' => $data);
+        }
+
+        $data = $this->prepare($data);
 
         foreach ($this->_spamDetectors as $spamDetector) {
-            if($spamDetector->detect($string)) {
+            if ($spamDetector->detect($data)) {
                 $failure++;
             }
         }
@@ -35,14 +39,37 @@ class SpamFilter
      *
      * @param SpamDetectorInterface $spamDetector
      *
+     * @throws \RuntimeException
      * @return SpamFilter
      */
     public function registerDetector(SpamDetectorInterface $spamDetector)
     {
-        $detectorClass = get_class($spamDetector);
-        $this->_spamDetectors[$detectorClass] = $spamDetector;
+        $detectorId = $this->classSimpleName($spamDetector);
+
+        if (isset($this->_spamDetectors[$detectorId])) {
+            throw new \RuntimeException(
+                "Spam Detector [%s] already exists", $detectorId);
+        }
+
+        $this->_spamDetectors[$detectorId] = $spamDetector;
 
         return $this;
+    }
+
+    /**
+     * Gets a detector using its detector ID (Class Simple Name)
+     *
+     * @param string $detectorId
+     *
+     * @return bool|\Linko\Spam\SpamDetectorInterface
+     */
+    public function getDetector($detectorId)
+    {
+        if (!isset($this->_spamDetectors[$detectorId])) {
+            return false;
+        }
+
+        return $this->_spamDetectors[$detectorId];
     }
 
     /**
@@ -59,12 +86,48 @@ class SpamFilter
      * Used to normalize string before passing
      * it to detectors
      *
-     * @param string $string
+     * @param array $data
      *
      * @return string
      */
-    private function _normalizeString($string)
+    protected function prepare(array $data)
     {
-        return trim(strtolower($string));
+        $data = array_merge(array(
+            'name'      => null,
+            'ip'        => $this->getIp(),
+            'email'     => null,
+            'userAgent' => $this->getUserAgent(),
+            'text'      => null
+        ), $data);
+
+        $data['text'] = trim(strtolower($data['text']));
+
+        return $data;
+    }
+
+    protected function getUserAgent()
+    {
+        return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
+    }
+
+    protected function getIp()
+    {
+        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+    }
+
+    /**
+     * Gets the name of a class (w. Namespaces removed)
+     *
+     * @param $class
+     *
+     * @return string
+     */
+    protected function classSimpleName($class)
+    {
+        if (is_object($class)) {
+            $class = get_class($class);
+        }
+
+        return substr($class, strrpos($class, '\\') + 1);
     }
 }

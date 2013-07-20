@@ -44,7 +44,6 @@ class BlackList implements SpamDetectorInterface
      * Set the second argument to true to treat
      * the added word as a regular expression.
      *
-     *
      * @param string $vars List of blacklisted words
      * @param bool $regex Flags word as regex pattern
      *
@@ -83,15 +82,17 @@ class BlackList implements SpamDetectorInterface
     }
 
     /**
-     * Defined in SpamDetectorInterface
-     * Checks a string if it contains any word that is blacklisted.
+     * Checks the text if it contains any word that is blacklisted.
      *
-     * @param string $string
+     * @param array $data
      *
      * @return bool
      */
-    public function detect($string)
+    public function detect($data)
     {
+        // We only need the text from the data
+        $text = $data['text'];
+
         $fileList = array();
 
         if($this->_listFile) {
@@ -113,6 +114,6 @@ class BlackList implements SpamDetectorInterface
             return '(?:'.$value.')';
         }, $blackLists)));
 
-        return (bool)preg_match($blackListRegex, $string);
+        return (bool)preg_match($blackListRegex, $text);
     }
 }
