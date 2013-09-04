@@ -1,5 +1,8 @@
 <?php namespace Linko\Spam;
 
+/**
+ * @author Morrison Laju <morrelinko@gmail.com>
+ */
 class SpamFilter
 {
     /**
@@ -10,23 +13,31 @@ class SpamFilter
     protected $spamDetectors = array();
 
     /**
+     * @var array
+     */
+    protected $options = array();
+
+    /**
      * Checks if a string is spam or not
      *
      * @param string|array $data
+     * @param array $options
      *
      * @return SpamResult
      */
-    public function check($data)
+    public function check($data, $options = array())
     {
+        $options = $this->optionsFor($options);
+
         $failure = 0;
         if (is_string($data)) {
-            $data = array('text' => $data);
+            $data = array("text" => $data);
         }
 
-        $data = $this->prepare($data);
+        $data = $this->prepare($data, $options);
 
         foreach ($this->spamDetectors as $spamDetector) {
-            if ($spamDetector->detect($data)) {
+            if ($spamDetector->detect($data, $options)) {
                 $failure++;
             }
         }
@@ -87,24 +98,46 @@ class SpamFilter
      * it to detectors
      *
      * @param array $data
+     * @param $options
      *
      * @return string
      */
-    protected function prepare(array $data)
+    protected function prepare(array $data, $options = array())
     {
         $data = array_merge(array(
-            'name'      => null,
-            'ip'        => $this->getIp(),
-            'email'     => null,
-            'userAgent' => $this->getUserAgent(),
-            'text'      => null
+            "ip" => $this->getIp(),
+            "userAgent" => $this->getUserAgent(),
+            "name" => null,
+            "email" => null,
+            "text" => null
         ), $data);
 
-        $data['text'] = trim(strtolower($data['text']));
+        if ($options["asciiConversion"]) {
+            setlocale(LC_ALL, 'en_us.UTF8');
+            $data["text"] = iconv('UTF-8', 'ASCII//TRANSLIT', $data["text"]);
+        }
+
+        $data["text"] = trim(strtolower($data["text"]));
+        $data["text"] = str_replace(array("\t", "\r\n", "\r", "\n"), "", $data["text"]);
 
         return $data;
     }
 
+    /**
+     * @param array $options
+     *
+     * @return array
+     */
+    protected function optionsFor(array $options)
+    {
+        return array_merge(array(
+            "asciiConversion" => true
+        ), $options);
+    }
+
+    /**
+     * @return string|null
+     */
     protected function getUserAgent()
     {
         return isset($_SERVER['HTTP_USER_AGENT'])
@@ -112,6 +145,9 @@ class SpamFilter
             : null;
     }
 
+    /**
+     * @return string|null
+     */
     protected function getIp()
     {
         return isset($_SERVER['REMOTE_ADDR'])

@@ -1,5 +1,8 @@
 <?php namespace Linko\Spam;
 
+/**
+ * @author Morrison Laju <morrelinko@gmail.com>
+ */
 class SpamResult
 {
     /**

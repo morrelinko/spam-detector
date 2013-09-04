@@ -22,8 +22,8 @@ $spamFilter = new Linko\Spam\SpamFilter();
 $spamFilter->registerDetector($blackListDetector);
 $spamFilter->registerDetector($linkRife);
 
-$comment = "Hey dude, your face is. www.example.com ";
-// $comment .= "some-manual-site.com is added at some point";
+$comment = "Hey dude, your face is. this should pass spam test";
+$comment .= "some-manual-site.com is added at some point which will fail spam test.";
 
 if ($spamFilter->check($comment)->passed()) {
     echo '<h4>Passed</h4>';
@@ -32,9 +32,9 @@ else {
     echo '<h4>The system has rejected your comment</h4>';
 }
 
-// You could also add more information
+// You may add more information
 $dataToCheck = array(
-    'name'  => 'someUsername', // Can be author username or full name
+    'name'  => 'some-username', // Can be author username or full name
     'email' => 'user@domain.tld',
     'text'  => $comment
 );
