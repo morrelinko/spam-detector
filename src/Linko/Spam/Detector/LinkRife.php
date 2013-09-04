@@ -41,7 +41,7 @@ class LinkRife implements SpamDetectorInterface
             $this->setMaxLinkAllowed($options['maxLinkAllowed']);
         }
 
-        if(isset($options['maxRatio'])) {
+        if (isset($options['maxRatio'])) {
             $this->setMaxRatio($options['maxRatio']);
         }
     }
@@ -94,7 +94,7 @@ class LinkRife implements SpamDetectorInterface
 
         $wordCount = str_word_count($text, null, 'http: //');
 
-        if($linkCount >= $this->getMaxLinkAllowed()) {
+        if ($linkCount >= $this->getMaxLinkAllowed()) {
             // If the link count is more than the maximum allowed
             // the string is automatically considered spam..
             return true;

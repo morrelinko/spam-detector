@@ -3,6 +3,9 @@
 use Illuminate\Support\ServiceProvider;
 use Linko\Spam\SpamFilter;
 
+/**
+ * @author Morrison Laju <morrelinko@gmail.com>
+ */
 class SpamFilterServiceProvider extends ServiceProvider
 {
     /**
