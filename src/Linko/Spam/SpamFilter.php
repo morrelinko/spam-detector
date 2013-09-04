@@ -7,7 +7,7 @@ class SpamFilter
      *
      * @var SpamDetectorInterface[]
      */
-    protected $_spamDetectors = array();
+    protected $spamDetectors = array();
 
     /**
      * Checks if a string is spam or not
@@ -25,7 +25,7 @@ class SpamFilter
 
         $data = $this->prepare($data);
 
-        foreach ($this->_spamDetectors as $spamDetector) {
+        foreach ($this->spamDetectors as $spamDetector) {
             if ($spamDetector->detect($data)) {
                 $failure++;
             }
@@ -46,12 +46,12 @@ class SpamFilter
     {
         $detectorId = $this->classSimpleName($spamDetector);
 
-        if (isset($this->_spamDetectors[$detectorId])) {
+        if (isset($this->spamDetectors[$detectorId])) {
             throw new \RuntimeException(
                 "Spam Detector [%s] already exists", $detectorId);
         }
 
-        $this->_spamDetectors[$detectorId] = $spamDetector;
+        $this->spamDetectors[$detectorId] = $spamDetector;
 
         return $this;
     }
@@ -65,11 +65,11 @@ class SpamFilter
      */
     public function getDetector($detectorId)
     {
-        if (!isset($this->_spamDetectors[$detectorId])) {
+        if (!isset($this->spamDetectors[$detectorId])) {
             return false;
         }
 
-        return $this->_spamDetectors[$detectorId];
+        return $this->spamDetectors[$detectorId];
     }
 
     /**
@@ -79,7 +79,7 @@ class SpamFilter
      */
     public function getDetectors()
     {
-        return $this->_spamDetectors;
+        return $this->spamDetectors;
     }
 
     /**
@@ -107,12 +107,16 @@ class SpamFilter
 
     protected function getUserAgent()
     {
-        return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
+        return isset($_SERVER['HTTP_USER_AGENT'])
+            ? $_SERVER['HTTP_USER_AGENT']
+            : null;
     }
 
     protected function getIp()
     {
-        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        return isset($_SERVER['REMOTE_ADDR'])
+            ? $_SERVER['REMOTE_ADDR']
+            : null;
     }
 
     /**
