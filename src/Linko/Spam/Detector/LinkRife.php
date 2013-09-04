@@ -84,7 +84,7 @@ class LinkRife implements SpamDetectorInterface
     /**
      * {@inheritDocs}
      */
-    public function detect($data)
+    public function detect($data, $options = array())
     {
         // We only need the text
         $text = $data['text'];

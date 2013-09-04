@@ -1,6 +1,7 @@
 <?php namespace Linko\Spam\Detector;
 
 use Linko\Spam\SpamDetectorInterface;
+use Linko\Spam\SpamUtil;
 
 /**
  * Spam BlackLists Detector
@@ -85,13 +86,14 @@ class BlackList implements SpamDetectorInterface
      * Checks the text if it contains any word that is blacklisted.
      *
      * @param array $data
+     * @param array $options
      *
      * @return bool
      */
-    public function detect($data)
+    public function detect($data, $options = array())
     {
         // We only need the text from the data
-        $text = $data['text'];
+        $text = SpamUtil::burstText($data['text']);
 
         $fileList = array();
 
