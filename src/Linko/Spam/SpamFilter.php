@@ -11,11 +11,22 @@ class SpamFilter
      * @var SpamDetectorInterface[]
      */
     protected $spamDetectors = array();
-
     /**
      * @var array
      */
     protected $options = array();
+    /**
+     * @var TextProcessor
+     */
+    protected $textProcessor;
+
+    /**
+     * @param TextProcessor $textProcessor
+     */
+    public function setTextProcessor(TextProcessor $textProcessor)
+    {
+        $this->textProcessor = $textProcessor;
+    }
 
     /**
      * Checks if a string is spam or not
@@ -46,6 +57,66 @@ class SpamFilter
     }
 
     /**
+     * @param array $options
+     *
+     * @return array
+     */
+    protected function optionsFor(array $options)
+    {
+        return array_merge(array(
+            "asciiConversion" => true
+        ), $options);
+    }
+
+    /**
+     * Used to normalize string before passing
+     * it to detectors
+     *
+     * @param array $data
+     * @param $options
+     *
+     * @return string
+     */
+    protected function prepare(array $data, $options = array())
+    {
+        $data = array_merge(array(
+            "ip" => $this->getIp(),
+            "userAgent" => $this->getUserAgent(),
+            "name" => null,
+            "email" => null,
+            "text" => null
+        ), $data);
+
+        if ($this->textProcessor == null) {
+            $this->textProcessor = new TextProcessor();
+        }
+
+        $data["text"] = $this->textProcessor->prepare($data["text"], $options);
+
+        return $data;
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getIp()
+    {
+        return isset($_SERVER['REMOTE_ADDR'])
+            ? $_SERVER['REMOTE_ADDR']
+            : null;
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getUserAgent()
+    {
+        return isset($_SERVER['HTTP_USER_AGENT'])
+            ? $_SERVER['HTTP_USER_AGENT']
+            : null;
+    }
+
+    /**
      * Registers a Spam Detector
      *
      * @param SpamDetectorInterface $spamDetector
@@ -65,6 +136,22 @@ class SpamFilter
         $this->spamDetectors[$detectorId] = $spamDetector;
 
         return $this;
+    }
+
+    /**
+     * Gets the name of a class (w. Namespaces removed)
+     *
+     * @param $class
+     *
+     * @return string
+     */
+    protected function classSimpleName($class)
+    {
+        if (is_object($class)) {
+            $class = get_class($class);
+        }
+
+        return substr($class, strrpos($class, '\\') + 1);
     }
 
     /**
@@ -91,83 +178,5 @@ class SpamFilter
     public function getDetectors()
     {
         return $this->spamDetectors;
-    }
-
-    /**
-     * Used to normalize string before passing
-     * it to detectors
-     *
-     * @param array $data
-     * @param $options
-     *
-     * @return string
-     */
-    protected function prepare(array $data, $options = array())
-    {
-        $data = array_merge(array(
-            "ip" => $this->getIp(),
-            "userAgent" => $this->getUserAgent(),
-            "name" => null,
-            "email" => null,
-            "text" => null
-        ), $data);
-
-        if ($options["asciiConversion"]) {
-            setlocale(LC_ALL, 'en_us.UTF8');
-            $data["text"] = iconv('UTF-8', 'ASCII//TRANSLIT', $data["text"]);
-        }
-
-        $data["text"] = trim(strtolower($data["text"]));
-        $data["text"] = str_replace(array("\t", "\r\n", "\r", "\n"), "", $data["text"]);
-
-        return $data;
-    }
-
-    /**
-     * @param array $options
-     *
-     * @return array
-     */
-    protected function optionsFor(array $options)
-    {
-        return array_merge(array(
-            "asciiConversion" => true
-        ), $options);
-    }
-
-    /**
-     * @return string|null
-     */
-    protected function getUserAgent()
-    {
-        return isset($_SERVER['HTTP_USER_AGENT'])
-            ? $_SERVER['HTTP_USER_AGENT']
-            : null;
-    }
-
-    /**
-     * @return string|null
-     */
-    protected function getIp()
-    {
-        return isset($_SERVER['REMOTE_ADDR'])
-            ? $_SERVER['REMOTE_ADDR']
-            : null;
-    }
-
-    /**
-     * Gets the name of a class (w. Namespaces removed)
-     *
-     * @param $class
-     *
-     * @return string
-     */
-    protected function classSimpleName($class)
-    {
-        if (is_object($class)) {
-            $class = get_class($class);
-        }
-
-        return substr($class, strrpos($class, '\\') + 1);
     }
 }
