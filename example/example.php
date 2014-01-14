@@ -1,8 +1,7 @@
 <?php
 
-use Linko\Spam\Detector\BlackList;
-use Linko\Spam\Detector\LinkRife;
-use Linko\Spam\SpamFilter;
+use SpamDetector\Detector\BlackList;
+use SpamDetector\Detector\LinkRife;
 
 require_once __DIR__ . '/../autoload.php';
 
@@ -16,29 +15,29 @@ $linkRife = new LinkRife();
 $linkRife->setMaxLinkAllowed(2);
 
 // setup spam filter father
-$spamFilter = new Linko\Spam\SpamFilter();
+$spamDetector = new SpamDetector\SpamDetector();
 
 // register children (o_o )
-$spamFilter->registerDetector($blackListDetector);
-$spamFilter->registerDetector($linkRife);
+$spamDetector->registerDetector($blackListDetector);
+$spamDetector->registerDetector($linkRife);
 
-$comment = "Hey dude, your face is. this should pass spam test";
-$comment .= "some-manual-site.com is added at some point which will fail spam test.";
+$comment = "Hey dude, this should pass spam test";
+// $comment .= "some-manual-site.com is added at some point which will fail spam test.";
+$comment .= " 127.0.0.1 was blocked";
 
-if ($spamFilter->check($comment)->passed()) {
+if ($spamDetector->check($comment)->passed()) {
     echo '<h4>Passed</h4>';
-}
-else {
+} else {
     echo '<h4>The system has rejected your comment</h4>';
 }
 
 // You may add more information
 $dataToCheck = array(
-    'name'  => 'some-username', // Can be author username or full name
+    'name' => 'some-username', // Can be author username or full name
     'email' => 'user@domain.tld',
-    'text'  => $comment
+    'text' => $comment
 );
 
-if ($spamFilter->check($dataToCheck)->passed()) {
+if ($spamDetector->check($dataToCheck)->passed()) {
     // do something
 }

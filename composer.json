@@ -1,6 +1,6 @@
 {
-    "name": "linkodev/spamfilter",
-    "description": "An extensible simple spam detector class",
+    "name": "morrelinko/spam-detector",
+    "description": "An extensible simple spam detector library",
     "authors": [
         {
             "name": "Morrison Laju",
@@ -8,6 +8,6 @@
         }
     ],
     "require": {
-        "php" : ">=5.3.0"
+        "php": ">=5.3.0"
     }
 }

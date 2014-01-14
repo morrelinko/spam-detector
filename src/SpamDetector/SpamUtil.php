@@ -1,4 +1,4 @@
-<?php namespace Linko\Spam;
+<?php namespace SpamDetector;
 
 class SpamUtil 
 {
@@ -10,7 +10,7 @@ class SpamUtil
     public static function burstText($text)
     {
         // Convert some characters that 'MAY' be used as alias
-        $text = str_replace(array("@", "$", "[dot]", "(dot)", "0"), array("at", "s", ".", ".", "o"), $text);
+        $text = str_replace(array("@", "$", "[dot]", "(dot)"), array("at", "s", ".", "."), $text);
 
         // Remove special characters
         $text = preg_replace("/[^a-zA-Z0-9-\.]/", "", $text);

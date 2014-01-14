@@ -1,7 +1,7 @@
-<?php namespace Linko\Spam\Provider\Laravel;
+<?php namespace SpamDetector\Provider\Laravel;
 
 use Illuminate\Support\ServiceProvider;
-use Linko\Spam\SpamFilter;
+use SpamDetector\SpamFilter;
 
 /**
  * @author Morrison Laju <morrelinko@gmail.com>

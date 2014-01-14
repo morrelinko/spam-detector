@@ -1,11 +1,11 @@
-<?php namespace Linko\Spam\Detector;
+<?php namespace SpamDetector\Detector;
 
-use Linko\Spam\SpamFilter;
+use SpamDetector\SpamDetector;
 
 class LinkRifeTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var SpamFilter
+     * @var SpamDetector
      */
     protected $spam;
 
@@ -15,7 +15,7 @@ class LinkRifeTest extends \PHPUnit_Framework_TestCase
         $linkRifeDetector->setMaxLinkAllowed(2);
         $linkRifeDetector->setMaxRatio(30);
 
-        $this->spam = new SpamFilter();
+        $this->spam = new SpamDetector();
         $this->spam->registerDetector($linkRifeDetector);
     }
 

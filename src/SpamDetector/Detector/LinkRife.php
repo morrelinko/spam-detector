@@ -1,6 +1,6 @@
-<?php namespace Linko\Spam\Detector;
+<?php namespace SpamDetector\Detector;
 
-use Linko\Spam\SpamDetectorInterface;
+use SpamDetector\SpamDetectorInterface;
 
 /**
  * LinkRife : Link Overflow Detector

@@ -1,11 +1,11 @@
-<?php namespace Linko\Spam;
+<?php namespace SpamDetector;
 
-use Linko\Spam\Detector\BlackList;
+use SpamDetector\Detector\BlackList;
 
 class SpamFilterTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var SpamFilter
+     * @var SpamDetector
      */
     protected $spam;
 
@@ -13,17 +13,17 @@ class SpamFilterTest extends \PHPUnit_Framework_TestCase
     {
         $blackList = new BlackList();
 
-        $this->spam = new SpamFilter();
+        $this->spam = new SpamDetector();
         $this->spam->registerDetector($blackList);
     }
 
     public function testRegisteredDetectors()
     {
         $detectors = $this->spam->getDetectors();
-        $this->assertContainsOnlyInstancesOf('Linko\Spam\SpamDetectorInterface', $detectors);
+        $this->assertContainsOnlyInstancesOf('SpamDetector\SpamDetectorInterface', $detectors);
         $this->assertArrayHasKey("BlackList", $detectors);
         $this->assertFalse($this->spam->getDetector('Dummy'));
-        $this->assertInstanceOf('Linko\Spam\SpamDetectorInterface', $this->spam->getDetector('BlackList'));
+        $this->assertInstanceOf('SpamDetector\SpamDetectorInterface', $this->spam->getDetector('BlackList'));
     }
 
     public function tearDown()

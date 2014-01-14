@@ -1,11 +1,11 @@
-<?php namespace Linko\Spam\Detector;
+<?php namespace SpamDetector\Detector;
 
-use Linko\Spam\SpamFilter;
+use SpamDetector\SpamDetector;
 
 class BlackListTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var SpamFilter
+     * @var SpamDetector
      */
     protected $spam;
 
@@ -23,7 +23,7 @@ class BlackListTest extends \PHPUnit_Framework_TestCase
         $this->blackList->add("127.0.0.1");
         $this->blackList->add("[site|some]dump(.*)?\.[com|org|net|info]", true);
 
-        $this->spam = new SpamFilter();
+        $this->spam = new SpamDetector();
         $this->spam->registerDetector($this->blackList);
     }
 
@@ -64,7 +64,7 @@ class BlackListTest extends \PHPUnit_Framework_TestCase
     public function testBannedWordsFromListFile()
     {
         // Setting a file to load black lists from
-        $this->blackList->setListFile(__DIR__.'/Resource/banned.txt');
+        $this->blackList->setListFile(__DIR__ . '/Resource/banned.txt');
 
         $string = "this is a string with banned words loaded from the lis file. [localhost]";
         $this->assertTrue($this->spam->check($string)->failed());

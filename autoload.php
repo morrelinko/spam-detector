@@ -9,7 +9,7 @@
 
 spl_autoload_register(function ($className) {
     $namespaces = array(
-        'Linko\Spam' => array('src', 'test')
+        'SpamDetector' => array('src', 'test')
     );
 
     $className = ltrim($className, '\\');

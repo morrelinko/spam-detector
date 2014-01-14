@@ -1,4 +1,4 @@
-Spam Filter
+Spam Detector
 ---------------------
 
 Spam Filter is a simple library for detecting spam messages. It follows the open closed principle by introducing
@@ -15,7 +15,7 @@ You can define the spam filter as a dependency in your project. Below is a minim
 
 	{
 		"require" : {
-			"linko/spamfilter": "1.1.0"
+			"morrelinko/spam-detector": "1.1.0"
 		}
 	}
 
@@ -26,14 +26,16 @@ this library which you can just 'include()' into your project files
 
 	<?php
 
-	require_once '/path/to/linko/spam/autoload.php';
+	require_once '/path/to/spam-detector/autoload.php';
 
-## Usage
+## Setup
+
+This should be done once throughout your app
 
 	```php
 	<?php
 
-	use Linko\Spam\SpamFilter;
+	use SpamDetector\SpamDetector;
 
 	// Create a black list spam detector
 	$blackListDetector = new BlackList();
@@ -43,21 +45,23 @@ this library which you can just 'include()' into your project files
 	$blackListDetector->add('127.0.0.1');
 
 	// Create the spam filter
-	$spam = new SpamFilter();
+	$spamDetector = new SpamDetector();
 
-	// Register a spam detector (Like the black list we added above)
-	$spam->registerDetector($blackListDetector);
+	// Register the spam detector
+	$spamDetector->registerDetector($blackListDetector);
+
+## Usage
 
 	// Run the check
-	$spamCheck = $spam->check("
+	$spamCheckResult = $spamDetector->check("
 		Hello, this is some text containing example.com
-		and should fail as it has a word that is black listed
+		and should fail as it has a word that is black-listed
 	");
 
-	if($spamCheck->passed())
-	{
+	if($spamCheckResult->passed()) {
 		// Do stuff
 	}
+	```
 
 Each time you call the ``check()`` method on a string, it returns a ``SpamResult``
 Object which holds the ... hmm ... spam check result.
@@ -70,10 +74,10 @@ The black list detector is a spam detector that flags a string as a spam  if it 
 any of one or more words that has been added to the black list.
 Strings could be a regular expression or a character sequence.
 
-###### 1. LinkRife Detector:
+###### 2. LinkRife Detector:
 
 The link rifle detector checks if a text contains too many links based on the max links allowed
-and the percentage ratio of links to words.. You can also modify these value to your taste.
+and the percentage ratio of links to words.. You can also modify these values to your taste.
 
 ## Creating your own custom Detector
 
@@ -81,8 +85,9 @@ You create a detector simply by creating a class that implements the ``SpamDetec
 with a ``detect()`` method that you must implement ... The string is passed as the argument.
 If your detector returns ``true`` then the text is flagged as spam otherwise not spam if false is returned.
 
-Below is a fantastic spam detector that checks if a text is above 200 words and flags it as spam.
+Below is an example of a "fantastic" spam detector that checks if a text is above 200 words and flags it as spam.
 
+	```php
 	<?php
 
 	class LengthTooLong implements SpamDetectorInterface
@@ -99,9 +104,13 @@ Below is a fantastic spam detector that checks if a text is above 200 words and 
 
 After creating your spam detector, you add it using the ``registerDetector()`` method in the SpamFilter
 
+	```php
 	...
 
 	$lengthTooLong = new LengthTooLong();
 
 	$spamFilter->registerDetector($lengthTooLong);
 
+Enjoy!!
+
+Supported by http://contactlyapp.com

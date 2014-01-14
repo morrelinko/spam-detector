@@ -1,20 +1,22 @@
-<?php namespace Linko\Spam;
+<?php namespace SpamDetector;
 
 /**
  * @author Morrison Laju <morrelinko@gmail.com>
  */
-class SpamFilter
+class SpamDetector
 {
     /**
      * Holds registered spam detectors
      *
      * @var SpamDetectorInterface[]
      */
-    protected $spamDetectors = array();
+    protected $detectors = array();
+
     /**
      * @var array
      */
     protected $options = array();
+
     /**
      * @var TextProcessor
      */
@@ -47,13 +49,61 @@ class SpamFilter
 
         $data = $this->prepare($data, $options);
 
-        foreach ($this->spamDetectors as $spamDetector) {
-            if ($spamDetector->detect($data, $options)) {
+        foreach ($this->detectors as $detector) {
+            if ($detector->detect($data, $options)) {
                 $failure++;
             }
         }
 
         return new SpamResult($failure > 0);
+    }
+
+    /**
+     * Registers a Spam Detector
+     *
+     * @param SpamDetectorInterface $spamDetector
+     *
+     * @throws \RuntimeException
+     * @return SpamDetector
+     */
+    public function registerDetector(SpamDetectorInterface $spamDetector)
+    {
+        $detectorId = $this->classSimpleName($spamDetector);
+
+        if (isset($this->detectors[$detectorId])) {
+            throw new \RuntimeException(
+                "Spam Detector [%s] already exists", $detectorId);
+        }
+
+        $this->detectors[$detectorId] = $spamDetector;
+
+        return $this;
+    }
+
+    /**
+     * Gets a detector using its detector ID (Class Simple Name)
+     *
+     * @param string $detectorId
+     *
+     * @return bool|\SpamDetector\SpamDetectorInterface
+     */
+    public function getDetector($detectorId)
+    {
+        if (!isset($this->detectors[$detectorId])) {
+            return false;
+        }
+
+        return $this->detectors[$detectorId];
+    }
+
+    /**
+     * Gets a list of all spam detectors
+     *
+     * @return SpamDetectorInterface[]
+     */
+    public function getDetectors()
+    {
+        return $this->detectors;
     }
 
     /**
@@ -79,6 +129,10 @@ class SpamFilter
      */
     protected function prepare(array $data, $options = array())
     {
+        if ($this->textProcessor == null) {
+            $this->textProcessor = new TextProcessor();
+        }
+
         $data = array_merge(array(
             "ip" => $this->getIp(),
             "userAgent" => $this->getUserAgent(),
@@ -87,10 +141,7 @@ class SpamFilter
             "text" => null
         ), $data);
 
-        if ($this->textProcessor == null) {
-            $this->textProcessor = new TextProcessor();
-        }
-
+        $data["original_text"] = $data["text"];
         $data["text"] = $this->textProcessor->prepare($data["text"], $options);
 
         return $data;
@@ -117,28 +168,6 @@ class SpamFilter
     }
 
     /**
-     * Registers a Spam Detector
-     *
-     * @param SpamDetectorInterface $spamDetector
-     *
-     * @throws \RuntimeException
-     * @return SpamFilter
-     */
-    public function registerDetector(SpamDetectorInterface $spamDetector)
-    {
-        $detectorId = $this->classSimpleName($spamDetector);
-
-        if (isset($this->spamDetectors[$detectorId])) {
-            throw new \RuntimeException(
-                "Spam Detector [%s] already exists", $detectorId);
-        }
-
-        $this->spamDetectors[$detectorId] = $spamDetector;
-
-        return $this;
-    }
-
-    /**
      * Gets the name of a class (w. Namespaces removed)
      *
      * @param $class
@@ -152,31 +181,5 @@ class SpamFilter
         }
 
         return substr($class, strrpos($class, '\\') + 1);
-    }
-
-    /**
-     * Gets a detector using its detector ID (Class Simple Name)
-     *
-     * @param string $detectorId
-     *
-     * @return bool|\Linko\Spam\SpamDetectorInterface
-     */
-    public function getDetector($detectorId)
-    {
-        if (!isset($this->spamDetectors[$detectorId])) {
-            return false;
-        }
-
-        return $this->spamDetectors[$detectorId];
-    }
-
-    /**
-     * Gets a list of all spam detectors
-     *
-     * @return SpamDetectorInterface[]
-     */
-    public function getDetectors()
-    {
-        return $this->spamDetectors;
     }
 }

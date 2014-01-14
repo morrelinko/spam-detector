@@ -1,7 +1,7 @@
-<?php namespace Linko\Spam\Detector;
+<?php namespace SpamDetector\Detector;
 
-use Linko\Spam\SpamDetectorInterface;
-use Linko\Spam\SpamUtil;
+use SpamDetector\SpamDetectorInterface;
+use SpamDetector\SpamUtil;
 
 /**
  * Spam BlackLists Detector

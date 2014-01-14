@@ -1,4 +1,4 @@
-<?php namespace Linko\Spam\Provider\Laravel;
+<?php namespace SpamDetector\Provider\Laravel;
 
 use Illuminate\Support\Facades\Facade;
 
