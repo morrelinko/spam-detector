@@ -1,6 +1,7 @@
 {
     "name": "morrelinko/spam-detector",
     "description": "An extensible simple spam detector library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Morrison Laju",
