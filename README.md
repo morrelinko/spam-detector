@@ -4,6 +4,8 @@ Spam Detector
 Spam Filter is a simple library for detecting spam messages. It follows the open closed principle by introducing
 Spam Detectors which are just separate classes used to extend the spam filter detecting capabilities.
 
+[![Build Status](https://travis-ci.org/morrelinko/spam-detector.png?branch=master)](https://travis-ci.org/morrelinko/spam-detector)
+
 ## Installation
 
 Spam Filter library can be loaded into your projects using [Composer](http://getcomposer.org) or by loading
@@ -13,55 +15,59 @@ the inbuilt autoloader.
 
 You can define the spam filter as a dependency in your project. Below is a minimal setup required
 
-	{
-		"require" : {
-			"morrelinko/spam-detector": "1.1.0"
-		}
+```json
+{
+	"require" : {
+		"morrelinko/spam-detector": "1.1.0"
 	}
+}
+```
 
 ##### Using autoload.php
 
 If you are not using composer for your dependency (which you should) there is a simple autoloader packaged with
 this library which you can just 'include()' into your project files
 
-	<?php
-
+```php
 	require_once '/path/to/spam-detector/autoload.php';
+```
 
 ## Setup
 
 This should be done once throughout your app
 
-	```php
-	<?php
+```php
 
-	use SpamDetector\SpamDetector;
+use SpamDetector\SpamDetector;
 
-	// Create a black list spam detector
-	$blackListDetector = new BlackList();
+// Create a black list spam detector
+$blackListDetector = new BlackList();
 
-	// add some text string to the black list detector
-	$blackListDetector->add('example.com');
-	$blackListDetector->add('127.0.0.1');
+// add some text string to the black list detector
+$blackListDetector->add('example.com');
+$blackListDetector->add('127.0.0.1');
 
-	// Create the spam filter
-	$spamDetector = new SpamDetector();
+// Create the spam filter
+$spamDetector = new SpamDetector();
 
-	// Register the spam detector
-	$spamDetector->registerDetector($blackListDetector);
+// Register the spam detector
+$spamDetector->registerDetector($blackListDetector);
+```
 
 ## Usage
 
-	// Run the check
-	$spamCheckResult = $spamDetector->check("
-		Hello, this is some text containing example.com
-		and should fail as it has a word that is black-listed
-	");
+```php
 
-	if($spamCheckResult->passed()) {
-		// Do stuff
-	}
-	```
+// Run the check
+$spamCheckResult = $spamDetector->check("
+	Hello, this is some text containing example.com
+	and should fail as it has a word that is black-listed
+");
+
+if($spamCheckResult->passed()) {
+	// Do stuff
+}
+```
 
 Each time you call the ``check()`` method on a string, it returns a ``SpamResult``
 Object which holds the ... hmm ... spam check result.
@@ -87,30 +93,35 @@ If your detector returns ``true`` then the text is flagged as spam otherwise not
 
 Below is an example of a "fantastic" spam detector that checks if a text is above 200 words and flags it as spam.
 
-	```php
-	<?php
+```php
 
-	class LengthTooLong implements SpamDetectorInterface
+class LengthTooLong implements SpamDetectorInterface
+{
+	public function detect($string)
 	{
-		public function detect($string)
-		{
-			if (str_word_count($string) > 200) {
-				return true;
-			}
-
-			return false;
+		if (str_word_count($string) > 200) {
+			return true;
 		}
+
+		return false;
 	}
+}
+```
 
 After creating your spam detector, you add it using the ``registerDetector()`` method in the SpamFilter
 
-	```php
-	...
+```php
+...
 
-	$lengthTooLong = new LengthTooLong();
+$lengthTooLong = new LengthTooLong();
 
-	$spamFilter->registerDetector($lengthTooLong);
+$spamFilter->registerDetector($lengthTooLong);
+```
 
-Enjoy!!
+## Licence
+
+The MIT License (MIT). Please see [License File](https://github.com/morrelinko/simple-photo/blob/master/LICENSE) for more information.
 
 Supported by http://contactlyapp.com
+
+Enjoy!!
