@@ -18,7 +18,7 @@ You can define the spam filter as a dependency in your project. Below is a minim
 ```json
 {
 	"require" : {
-		"morrelinko/spam-detector": "1.1.0"
+		"morrelinko/spam-detector": "3.0.0"
 	}
 }
 ```
