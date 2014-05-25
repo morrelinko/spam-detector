@@ -2,8 +2,6 @@
 
 namespace SpamDetector\Detector;
 
-use SpamDetector\SpamDetectorInterface;
-
 /**
  * LinkRife : Link Overflow Detector
  * Spam Detector that detects if a string contains
@@ -85,7 +83,7 @@ class LinkRife implements SpamDetectorInterface
     /**
      * {@inheritDocs}
      */
-    public function detect($data, $options = array())
+    public function detect($data)
     {
         // We only need the text
         $text = $data['text'];

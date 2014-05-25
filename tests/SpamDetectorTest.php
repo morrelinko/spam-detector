@@ -2,7 +2,7 @@
 
 use SpamDetector\Detector\BlackList;
 
-class SpamFilterTest extends \PHPUnit_Framework_TestCase
+class SpamDetectorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var SpamDetector
@@ -20,10 +20,11 @@ class SpamFilterTest extends \PHPUnit_Framework_TestCase
     public function testRegisteredDetectors()
     {
         $detectors = $this->spam->getDetectors();
-        $this->assertContainsOnlyInstancesOf('SpamDetector\SpamDetectorInterface', $detectors);
+        $this->assertContainsOnlyInstancesOf('SpamDetector\Detector\SpamDetectorInterface', $detectors);
         $this->assertArrayHasKey("BlackList", $detectors);
+
         $this->assertFalse($this->spam->getDetector('Dummy'));
-        $this->assertInstanceOf('SpamDetector\SpamDetectorInterface', $this->spam->getDetector('BlackList'));
+        $this->assertInstanceOf('SpamDetector\Detector\SpamDetectorInterface', $this->spam->getDetector('BlackList'));
     }
 
     public function tearDown()

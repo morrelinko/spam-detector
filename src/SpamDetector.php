@@ -39,20 +39,19 @@ class SpamDetector
      * Checks if a string is spam or not
      *
      * @param string|array $data
-     * @param array $options
      * @return SpamResult
      */
-    public function check($data, $options = array())
+    public function check($data)
     {
         $failure = 0;
         if (is_string($data)) {
             $data = array('text' => $data);
         }
 
-        $data = $this->prepareData($data, $options);
+        $data = $this->prepareData($data);
 
         foreach ($this->detectors as $detector) {
-            if ($detector->detect($data, $options)) {
+            if ($detector->detect($data)) {
                 $failure++;
             }
         }

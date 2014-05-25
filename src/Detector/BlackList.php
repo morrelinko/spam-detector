@@ -83,10 +83,9 @@ class BlackList implements SpamDetectorInterface
      * Checks the text if it contains any word that is blacklisted.
      *
      * @param array $data
-     * @param array $options
      * @return bool
      */
-    public function detect($data, $options = array())
+    public function detect($data)
     {
         // We only need the text from the data
         $text = $data['text'];
@@ -99,7 +98,7 @@ class BlackList implements SpamDetectorInterface
 
         $blackLists = array_merge($this->blackLists, $fileList);
 
-        $blackListRegex = sprintf('!%s!', implode('|', array_map(function ($value) {
+        $blackListRegex = sprintf('~%s~', implode('|', array_map(function ($value) {
             if (isset($value[0]) && $value[0] == '[') {
                 $value = substr($value, 1, -1);
             } else {
