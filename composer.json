@@ -1,14 +1,19 @@
 {
-    "name": "morrelinko/spam-detector",
-    "description": "An extensible simple spam detector library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Morrison Laju",
-            "email": "morrelinko@gmail.com"
-        }
-    ],
-    "require": {
-        "php": ">=5.3.0"
+  "name": "morrelinko/spam-detector",
+  "description": "An extensible simple spam detector library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Morrison Laju",
+      "email": "morrelinko@gmail.com"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "SpamDetector\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=5.3.0"
+  }
 }
