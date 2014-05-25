@@ -10,7 +10,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "SpamDetector\\": "src/"
+      "SpamDetector\\": ["src/", "tests/"]
     }
   },
   "require": {
