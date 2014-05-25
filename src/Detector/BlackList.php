@@ -10,6 +10,16 @@ namespace SpamDetector\Detector;
 class BlackList implements SpamDetectorInterface
 {
     /**
+     * @var string
+     */
+    protected $regex;
+
+    /**
+     * @var bool
+     */
+    protected $rebuild = false;
+
+    /**
      * Holds blacklisted words
      *
      * @var array
@@ -80,6 +90,14 @@ class BlackList implements SpamDetectorInterface
     }
 
     /**
+     * @param $flag
+     */
+    protected function rebuildRegex($flag)
+    {
+        $this->rebuild = $flag;
+    }
+
+    /**
      * Checks the text if it contains any word that is blacklisted.
      *
      * @param array $data
@@ -90,24 +108,25 @@ class BlackList implements SpamDetectorInterface
         // We only need the text from the data
         $text = $data['text'];
 
-        $fileList = array();
-
-        if ($this->listFile) {
-            $fileList = array_map('trim', explode("\n", file_get_contents($this->listFile)));
-        }
-
-        $blackLists = array_merge($this->blackLists, $fileList);
-
-        $blackListRegex = sprintf('~%s~', implode('|', array_map(function ($value) {
-            if (isset($value[0]) && $value[0] == '[') {
-                $value = substr($value, 1, -1);
-            } else {
-                $value = preg_quote($value);
+        if (!$this->regex || $this->rebuild) {
+            $fileList = array();
+            if ($this->listFile) {
+                $fileList = array_map('trim', explode("\n", file_get_contents($this->listFile)));
             }
 
-            return '(?:' . $value . ')';
-        }, $blackLists)));
+            $blackLists = array_merge($this->blackLists, $fileList);
 
-        return (bool) preg_match($blackListRegex, $text);
+            $this->regex = sprintf('~%s~', implode('|', array_map(function ($value) {
+                if (isset($value[0]) && $value[0] == '[') {
+                    $value = substr($value, 1, -1);
+                } else {
+                    $value = preg_quote($value);
+                }
+
+                return '(?:' . $value . ')';
+            }, $blackLists)));
+        }
+
+        return (bool) preg_match($this->regex, $text);
     }
 }
