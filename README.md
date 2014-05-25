@@ -72,13 +72,30 @@ if($spamCheckResult->passed()) {
 Each time you call the ``check()`` method on a string, it returns a ``SpamResult``
 Object which holds the ... hmm ... spam check result.
 
+You could provide more information about the entity trying to perform the action you are checking against
+the spam detector.
+
+    <?php
+
+    $check = $spamDetector->check(array(
+        'name' => 'johndoe',
+        'email' => 'johndoe@gmail.com',
+        'text' => 'Hello, this is some clean comment John Doe is trying to post'
+    ));
+
+    if ($check->passed()) {
+        // Post comment
+    }
+
+Some detectors will require these extra information to \`perform`...
+
 ## Currently Supported Spam Detectors
 
 ###### 1. BlackList Detector:
 
-The black list detector is a spam detector that flags a string as a spam  if it contains
+The black list detector flags a string as a spam if it contains
 any of one or more words that has been added to the black list.
-Strings could be a regular expression or a character sequence.
+Strings could be formed from Regular Expressions or a Character Sequence.
 
 ###### 2. LinkRife Detector:
 
@@ -88,10 +105,26 @@ and the percentage ratio of links to words.. You can also modify these values to
 ## Creating your own custom Detector
 
 You create a detector simply by creating a class that implements the ``SpamDetectorInterface``
-with a ``detect()`` method that you must implement ... The string is passed as the argument.
+which defines the following contract.
+
+    interface SpamDetectorInterface
+    {
+        public function detect($data);
+    }
+
+The prepared data passed as the argument is made up of an array with these values.
+
+* 'name' => Optional name of the user. Could be username or full name [This is provided by you].
+* 'email' => Optional e-mail address of the user [This is provided by you]
+* 'text' => The content of the message [This is provided by you]
+* 'ip' => The IP address of the user
+* 'user_agent': The browser user-agent of the user
+
 If your detector returns ``true`` then the text is flagged as spam otherwise not spam if false is returned.
 
 Below is an example of a "fantastic" spam detector that checks if a text is above 200 words and flags it as spam.
+
+Its not usable, its just an example.
 
 ```php
 
