@@ -1,14 +1,15 @@
-<?php namespace SpamDetector\Detector;
+<?php
+
+namespace SpamDetector\Detector;
 
 use SpamDetector\SpamDetectorInterface;
 
 /**
  * LinkRife : Link Overflow Detector
- *
  * Spam Detector that detects if a string contains
  * too many links.
  *
- * @author Morrison Laju <morrelinko@gmail.com>
+ * @author Laju Morrison <morrelinko@gmail.com>
  */
 class LinkRife implements SpamDetectorInterface
 {
@@ -17,7 +18,7 @@ class LinkRife implements SpamDetectorInterface
     /**
      * @var int
      */
-    private $_maxLinkAllowed = 10;
+    protected $maxLinkAllowed = 10;
 
     /**
      * Ratio (In Percentage) of the number of links
@@ -28,7 +29,7 @@ class LinkRife implements SpamDetectorInterface
      * @var int
      *   Default 40%
      */
-    private $_maxRatio = 40;
+    protected $maxRatio = 40;
 
     /**
      * Constructor
@@ -54,7 +55,7 @@ class LinkRife implements SpamDetectorInterface
      */
     public function setMaxLinkAllowed($count)
     {
-        $this->_maxLinkAllowed = $count;
+        $this->maxLinkAllowed = $count;
     }
 
     /**
@@ -62,7 +63,7 @@ class LinkRife implements SpamDetectorInterface
      */
     public function getMaxLinkAllowed()
     {
-        return $this->_maxLinkAllowed;
+        return $this->maxLinkAllowed;
     }
 
     /**
@@ -70,7 +71,7 @@ class LinkRife implements SpamDetectorInterface
      */
     public function setMaxRatio($ratio)
     {
-        $this->_maxRatio = $ratio;
+        $this->maxRatio = $ratio;
     }
 
     /**
@@ -78,7 +79,7 @@ class LinkRife implements SpamDetectorInterface
      */
     public function getMaxRatio()
     {
-        return $this->_maxRatio;
+        return $this->maxRatio;
     }
 
     /**
@@ -94,7 +95,7 @@ class LinkRife implements SpamDetectorInterface
 
         $wordCount = str_word_count($text, null, 'http: //');
 
-        if ($linkCount >= $this->getMaxLinkAllowed()) {
+        if ($linkCount >= $this->maxLinkAllowed) {
             // If the link count is more than the maximum allowed
             // the string is automatically considered spam..
             return true;
@@ -103,6 +104,6 @@ class LinkRife implements SpamDetectorInterface
         // Get the ratio of words to link
         $ratio = floor(($linkCount / $wordCount) * 100);
 
-        return $ratio >= $this->getMaxRatio();
+        return $ratio >= $this->maxRatio;
     }
 }

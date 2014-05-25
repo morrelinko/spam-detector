@@ -1,14 +1,19 @@
-<?php namespace SpamDetector;
+<?php
+
+namespace SpamDetector;
+
+use SpamDetector\Detector\SpamDetectorInterface;
+use SpamDetector\StringProcessor\StringProcessorInterface;
 
 /**
- * @author Morrison Laju <morrelinko@gmail.com>
+ * @author Laju Morrison <morrelinko@gmail.com>
  */
 class SpamDetector
 {
     /**
      * Holds registered spam detectors
      *
-     * @var SpamDetectorInterface[]
+     * @var Detector\SpamDetectorInterface[]
      */
     protected $detectors = array();
 
@@ -18,16 +23,16 @@ class SpamDetector
     protected $options = array();
 
     /**
-     * @var TextProcessor
+     * @var StringProcessorInterface
      */
-    protected $textProcessor;
+    protected $stringProcessor;
 
     /**
-     * @param TextProcessor $textProcessor
+     * @param StringProcessorInterface $stringProcessor
      */
-    public function setTextProcessor(TextProcessor $textProcessor)
+    public function setStringProcessor(StringProcessorInterface $stringProcessor)
     {
-        $this->textProcessor = $textProcessor;
+        $this->stringProcessor = $stringProcessor;
     }
 
     /**
@@ -35,19 +40,16 @@ class SpamDetector
      *
      * @param string|array $data
      * @param array $options
-     *
      * @return SpamResult
      */
     public function check($data, $options = array())
     {
-        $options = $this->optionsFor($options);
-
         $failure = 0;
         if (is_string($data)) {
-            $data = array("text" => $data);
+            $data = array('text' => $data);
         }
 
-        $data = $this->prepare($data, $options);
+        $data = $this->prepareData($data, $options);
 
         foreach ($this->detectors as $detector) {
             if ($detector->detect($data, $options)) {
@@ -62,7 +64,6 @@ class SpamDetector
      * Registers a Spam Detector
      *
      * @param SpamDetectorInterface $spamDetector
-     *
      * @throws \RuntimeException
      * @return SpamDetector
      */
@@ -72,7 +73,7 @@ class SpamDetector
 
         if (isset($this->detectors[$detectorId])) {
             throw new \RuntimeException(
-                "Spam Detector [%s] already exists", $detectorId);
+                'Spam Detector [%s] already registered', $detectorId);
         }
 
         $this->detectors[$detectorId] = $spamDetector;
@@ -84,8 +85,7 @@ class SpamDetector
      * Gets a detector using its detector ID (Class Simple Name)
      *
      * @param string $detectorId
-     *
-     * @return bool|\SpamDetector\SpamDetectorInterface
+     * @return bool|SpamDetectorInterface
      */
     public function getDetector($detectorId)
     {
@@ -107,42 +107,24 @@ class SpamDetector
     }
 
     /**
-     * @param array $options
-     *
-     * @return array
-     */
-    protected function optionsFor(array $options)
-    {
-        return array_merge(array(
-            "asciiConversion" => true
-        ), $options);
-    }
-
-    /**
      * Used to normalize string before passing
      * it to detectors
      *
      * @param array $data
-     * @param $options
-     *
      * @return string
      */
-    protected function prepare(array $data, $options = array())
+    protected function prepareData(array $data)
     {
-        if ($this->textProcessor == null) {
-            $this->textProcessor = new TextProcessor();
-        }
-
         $data = array_merge(array(
-            "ip" => $this->getIp(),
-            "userAgent" => $this->getUserAgent(),
-            "name" => null,
-            "email" => null,
-            "text" => null
+            'name' => null,
+            'email' => null,
+            'text' => null,
+            'ip' => $this->getIp(),
+            'user_agent' => $this->getUserAgent()
         ), $data);
 
-        $data["original_text"] = $data["text"];
-        $data["text"] = $this->textProcessor->prepare($data["text"], $options);
+        $data['original_text'] = $data['text'];
+        $data['text'] = $this->stringProcessor ? $this->stringProcessor->prepare($data['text']) : $data['text'];
 
         return $data;
     }
@@ -171,7 +153,6 @@ class SpamDetector
      * Gets the name of a class (w. Namespaces removed)
      *
      * @param $class
-     *
      * @return string
      */
     protected function classSimpleName($class)

@@ -1,19 +1,19 @@
 <?php namespace SpamDetector;
 
 /**
- * @author Morrison Laju <morrelinko@gmail.com>
+ * @author Laju Morrison <morrelinko@gmail.com>
  */
 class SpamResult
 {
     /**
      * @var bool
      */
-    private $_isSpam = false;
+    protected $isSpam = false;
 
     /**
      * @var array
      */
-    private $_messages = array();
+    protected $messages = array();
 
     /**
      * Constructor
@@ -23,7 +23,7 @@ class SpamResult
      */
     public function __construct($isSpam, array $messages = array())
     {
-        $this->_isSpam = $isSpam;
+        $this->isSpam = $isSpam;
     }
 
     /**
@@ -41,7 +41,7 @@ class SpamResult
      */
     public function passed()
     {
-        return $this->_isSpam == false;
+        return $this->isSpam == false;
     }
 
     /**
@@ -57,6 +57,6 @@ class SpamResult
      */
     public function getMessages()
     {
-        return $this->_messages;
+        return $this->messages;
     }
 }

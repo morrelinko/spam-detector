@@ -1,12 +1,11 @@
-<?php namespace SpamDetector\Detector;
+<?php
 
-use SpamDetector\SpamDetectorInterface;
-use SpamDetector\SpamUtil;
+namespace SpamDetector\Detector;
 
 /**
  * Spam BlackLists Detector
  *
- * @author Morrison Laju <morrelinko@gmail.com>
+ * @author Laju Morrison <morrelinko@gmail.com>
  */
 class BlackList implements SpamDetectorInterface
 {
@@ -15,14 +14,14 @@ class BlackList implements SpamDetectorInterface
      *
      * @var array
      */
-    private $_blackLists = array();
+    protected $blackLists = array();
 
     /**
      * Holds the file that stores blacklisted words
      *
      * @var null
      */
-    private $_listFile = null;
+    protected $listFile = null;
 
     /**
      * Constructor
@@ -32,7 +31,7 @@ class BlackList implements SpamDetectorInterface
     public function __construct(array $options = array())
     {
         if (isset($options['blackLists'])) {
-            $this->_blackLists = $options['blackLists'];
+            $this->blackLists = $options['blackLists'];
         }
 
         if (isset($options['listFile'])) {
@@ -47,7 +46,6 @@ class BlackList implements SpamDetectorInterface
      *
      * @param string $vars List of blacklisted words
      * @param bool $regex Flags word as regex pattern
-     *
      * @return BlackList
      */
     public function add($vars, $regex = false)
@@ -57,7 +55,7 @@ class BlackList implements SpamDetectorInterface
         }
 
         foreach ($vars as $var) {
-            $this->_blackLists[] = $regex ? '[' . $var . ']' : $var;
+            $this->blackLists[] = $regex ? '[' . $var . ']' : $var;
         }
 
         return $this;
@@ -67,19 +65,18 @@ class BlackList implements SpamDetectorInterface
      * Sets black list file
      *
      * @param string $file
-     *
      * @throws \RuntimeException
      */
     public function setListFile($file)
     {
         if (!file_exists($file)) {
             throw new \RuntimeException(sprintf(
-                "Could not find black list file [%s]",
+                "Could not find blacklist file [%s]",
                 $file
             ));
         }
 
-        $this->_listFile = $file;
+        $this->listFile = $file;
     }
 
     /**
@@ -87,23 +84,20 @@ class BlackList implements SpamDetectorInterface
      *
      * @param array $data
      * @param array $options
-     *
      * @return bool
      */
     public function detect($data, $options = array())
     {
         // We only need the text from the data
-        $text = SpamUtil::burstText($data['text']);
+        $text = $data['text'];
 
         $fileList = array();
 
-        if ($this->_listFile) {
-            $fileList = array_map('trim',
-                explode("\n", file_get_contents($this->_listFile))
-            );
+        if ($this->listFile) {
+            $fileList = array_map('trim', explode("\n", file_get_contents($this->listFile)));
         }
 
-        $blackLists = array_merge($this->_blackLists, $fileList);
+        $blackLists = array_merge($this->blackLists, $fileList);
 
         $blackListRegex = sprintf('!%s!', implode('|', array_map(function ($value) {
             if (isset($value[0]) && $value[0] == '[') {
@@ -115,6 +109,6 @@ class BlackList implements SpamDetectorInterface
             return '(?:' . $value . ')';
         }, $blackLists)));
 
-        return (bool)preg_match($blackListRegex, $text);
+        return (bool) preg_match($blackListRegex, $text);
     }
 }
