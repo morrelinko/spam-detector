@@ -58,4 +58,3 @@ class NativeStringProcessor implements StringProcessorInterface
         return $string;
     }
 }
- 

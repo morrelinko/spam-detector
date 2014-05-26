@@ -72,7 +72,9 @@ class SpamDetector
 
         if (isset($this->detectors[$detectorId])) {
             throw new \RuntimeException(
-                'Spam Detector [%s] already registered', $detectorId);
+                'Spam Detector [%s] already registered',
+                $detectorId
+            );
         }
 
         $this->detectors[$detectorId] = $spamDetector;

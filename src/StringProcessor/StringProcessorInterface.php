@@ -14,4 +14,4 @@ interface StringProcessorInterface
      * @return mixed
      */
     public function prepare($string);
-} 
+}

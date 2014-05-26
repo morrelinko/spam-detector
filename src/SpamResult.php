@@ -1,4 +1,6 @@
-<?php namespace SpamDetector;
+<?php
+
+namespace SpamDetector;
 
 /**
  * @author Laju Morrison <morrelinko@gmail.com>
