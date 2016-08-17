@@ -18,7 +18,7 @@ You can define the spam filter as a dependency in your project. Below is a minim
 ```json
 {
 	"require" : {
-		"morrelinko/spam-detector": "3.0.0"
+		"morrelinko/spam-detector": "0.2.0"
 	}
 }
 ```
@@ -154,7 +154,5 @@ $spamFilter->registerDetector($lengthTooLong);
 ## Licence
 
 The MIT License (MIT). Please see [License File](https://github.com/morrelinko/simple-photo/blob/master/LICENSE) for more information.
-
-Supported by http://contactlyapp.com
 
 Enjoy!!
